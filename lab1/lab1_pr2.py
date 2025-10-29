@@ -1,4 +1,4 @@
-from lab1_pr1 import ALFABET, validate_text, clean_text, read_key
+from lab1.lab1_pr1 import ALFABET, validate_text, clean_text, read_key
 
 
 def validate_k2(k2: str) -> bool:
