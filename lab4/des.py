@@ -18,111 +18,6 @@ P_TABLE = [
 # ========================= UTILITY FUNCTIONS =========================
 
 
-def decimal_to_binary(num, length=None):
-    """
-    Convert decimal number to binary string
-    """
-    if num == 0:
-        result = "0"
-    else:
-        result = ""
-        temp = num
-        while temp > 0:
-            result = str(temp % 2) + result
-            temp = temp // 2
-
-    if length:
-        result = result.zfill(length)
-
-    return result
-
-
-def binary_to_decimal(binary_str):
-    """
-    Convert binary string to decimal number
-
-    """
-    binary_str = binary_str.replace(" ", "")
-    result = 0
-    power = 0
-
-    # Process from right to left
-    for i in range(len(binary_str) - 1, -1, -1):
-        if binary_str[i] == '1':
-            result += 2 ** power
-        power += 1
-
-    return result
-
-
-def decimal_to_hex(num, length=None):
-    """
-    Convert decimal number to hexadecimal string (manual implementation)
-    """
-    hex_digits = "0123456789ABCDEF"
-
-    if num == 0:
-        result = "0"
-    else:
-        result = ""
-        temp = num
-        while temp > 0:
-            result = hex_digits[temp % 16] + result
-            temp = temp // 16
-
-    if length:
-        result = result.zfill(length)
-
-    return result
-
-
-def hex_to_decimal(hex_str):
-    """
-    Convert hexadecimal string to decimal number
-    """
-    hex_str = hex_str.upper()
-    hex_digits = "0123456789ABCDEF"
-    result = 0
-    power = 0
-
-    # Process from right to left
-    for i in range(len(hex_str) - 1, -1, -1):
-        digit_value = hex_digits.index(hex_str[i])
-        result += digit_value * (16 ** power)
-        power += 1
-
-    return result
-
-
-def binary_to_hex(binary_str):
-    """
-    Convert binary string to hexadecimal string
-    """
-    # Remove spaces and ensure length is multiple of 4
-    binary_str = binary_str.replace(" ", "")
-
-    # Pad if necessary
-    while len(binary_str) % 4 != 0:
-        binary_str = "0" + binary_str
-
-    # Convert to decimal first, then to hex
-    decimal_value = binary_to_decimal(binary_str)
-    hex_str = decimal_to_hex(decimal_value, len(binary_str) // 4)
-
-    return hex_str
-
-
-def hex_to_binary(hex_str, length=None):
-    """
-    Convert hexadecimal string to binary string
-    """
-    # Convert to decimal first, then to binary
-    decimal_value = hex_to_decimal(hex_str)
-    binary_str = decimal_to_binary(decimal_value, length)
-
-    return binary_str
-
-
 def format_binary(binary_str, group_size=4):
     """Format binary string with spaces for readability"""
     return ' '.join([binary_str[i:i + group_size] for i in range(0, len(binary_str), group_size)])
@@ -246,58 +141,17 @@ def get_user_input():
 
     while True:
         print("\nChoose input method:")
-        print("  1. Enter hexadecimal values")
-        print("  2. Enter binary values")
-        print("  3. Generate random values")
-        choice = input("\nYour choice (1/2/3): ").strip()
+        print("  1. Enter binary values")
+        print("  2. Generate random values")
+        choice = input("\nYour choice (1/2): ").strip()
 
         if choice == '1':
-            return get_hex_input()
-        elif choice == '2':
             return get_binary_input()
-        elif choice == '3':
+        elif choice == '2':
             return generate_random_input()
+
         else:
-            print("Invalid choice. Please enter 1, 2, or 3.")
-
-
-def get_hex_input():
-    """Get hexadecimal input from user"""
-    print("\nEnter hexadecimal values (8 hex digits = 32 bits):")
-
-    while True:
-        round_num = input("\n  Round number k: ").strip()
-        try:
-            round_num = int(round_num)
-            if 1 <= round_num <= 16:
-                break
-            print("  Round number must be between 1 and 16")
-        except ValueError:
-            print("  Please enter a valid number")
-
-    while True:
-        l_prev_hex = input(f"  L(k-1) (hex): ").strip().upper()
-        if len(l_prev_hex) == 8:
-            try:
-                l_prev = hex_to_binary(l_prev_hex, 32)
-                break
-            except ValueError:
-                print("  Invalid hexadecimal value")
-        else:
-            print("  Please enter exactly 8 hexadecimal digits")
-
-    while True:
-        sbox_hex = input(f"  S-box output (hex): ").strip().upper()
-        if len(sbox_hex) == 8:
-            try:
-                sbox_output = hex_to_binary(sbox_hex, 32)
-                break
-            except ValueError:
-                print("  Invalid hexadecimal value")
-        else:
-            print("  Please enter exactly 8 hexadecimal digits")
-
-    return round_num, l_prev, sbox_output
+            print("Invalid choice. Please enter 1, 2.")
 
 
 def get_binary_input():
@@ -338,8 +192,8 @@ def generate_random_input():
     sbox_output = ''.join([str(random.randint(0, 1)) for _ in range(32)])
 
     print(f"\n  Round number k: {round_num}")
-    print(f"  L(k-1): {format_binary(l_prev)} ({binary_to_hex(l_prev)})")
-    print(f"  S-box output: {format_binary(sbox_output)} ({binary_to_hex(sbox_output)})")
+    print(f"  L(k-1): {format_binary(l_prev)} ")
+    print(f"  S-box output: {format_binary(sbox_output)} ")
 
     return round_num, l_prev, sbox_output
 
